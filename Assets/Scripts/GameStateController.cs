@@ -8,5 +8,19 @@ public class GameStateController : MonoBehaviour
     public List<int> SelectedCardIdList = new List<int>();
 
     // シングルトンの生成
+    private static GameStateController mInstance;
 
+    public static GameStateController Instance
+    {
+        get
+        {
+            // インスタンスが生成されていない場合、自動で生成する
+            if (mInstance == null)
+            {
+                GameObject obj = new GameObject("GameStateController");
+                mInstance = obj.AddComponent<GameStateController>();
+            }
+            return mInstance;
+        }
+    }
 }
