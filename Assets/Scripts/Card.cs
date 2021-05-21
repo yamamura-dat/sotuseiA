@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class Card : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class Card : MonoBehaviour
 
     // カード情報
     private CardData mData;
+
+    // 座標情報
+    private RectTransform mRt;
+
     // カードの設定
     public void Set(CardData data)
     {
@@ -37,6 +42,10 @@ public class Card : MonoBehaviour
 
         // アルファ値を1に設定
         this.CanGroup.alpha = 1;
+
+        // 座標情報を取得しておく
+        this.mRt = this.GetComponent<RectTransform>();
+
     }
     ///  <summary>
     /// カードを背面表記にする
@@ -77,14 +86,32 @@ public class Card : MonoBehaviour
 
         Debug.Log("OnClick");
 
-        // 選択判定フラグを有効にする
-        this.mIsSelected = true;
+        // Dotweenで回転処理を行う
+        this.mRt.DORotate(new Vector3(0f, 90f, 0f), 0.2f)
+            // 回転が完了したら
+            .OnComplete(() => {
+                // 選択判定フラグを有効にする
+                this.mIsSelected = true;
 
-        // カードを表面にする
-        this.CardImage.sprite = this.mData.ImgSprite;
+                // カードを表面にする
+                this.CardImage.sprite = this.mData.ImgSprite;
 
-        // 選択したCardIdを保存しよう！
-        GameStateController.Instance.SelectedCardIdList.Add(this.mData.Id);
+                // Y座標を元に戻す
+                this.onReturnRotate();
+            });
+    }
+    /// <summary>
+    /// カードの回転軸を元に戻す
+    /// </summary>
+    private void onReturnRotate()
+    {
+
+        this.mRt.DORotate(new Vector3(0f, 0f, 0f), 0.2f)
+            // 回転が終わったら
+            .OnComplete(() => {
+                // 選択したCardIdを保存しよう！
+                GameStateController.Instance.SelectedCardIdList.Add(this.mData.Id);
+            });
     }
 }
 /// <summary>
