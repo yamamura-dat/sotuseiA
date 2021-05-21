@@ -126,7 +126,7 @@ public class CardCreateManager : MonoBehaviour
                 //_card.SetInvisible();
             }
             // 獲得していないカードは裏面表示にする
-            else
+            else if (_card.IsSelected)
             {
 
                 // カードを裏面表示にする

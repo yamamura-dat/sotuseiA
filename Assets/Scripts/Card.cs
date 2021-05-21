@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using System;
 
 public class Card : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class Card : MonoBehaviour
 
     // 選択されているか判定
     private bool mIsSelected = false;
+
+    public bool IsSelected => this.mIsSelected;
 
     // カード情報
     private CardData mData;
@@ -52,12 +55,20 @@ public class Card : MonoBehaviour
     /// </summary>
     public void SetHide()
     {
+        // 90度回転する
+        this.onRotate(() => {
 
-        // 選択判定フラグを初期化する
-        this.mIsSelected = false;
+            // 選択判定フラグを初期化する
+            this.mIsSelected = false;
 
-        // カードを背面表示にする
-        this.CardImage.sprite = Resources.Load<Sprite>("Image/samplecard");
+            // カードを背面表示にする
+            this.CardImage.sprite = Resources.Load<Sprite>("Image/samplecard");
+
+            // 角度を元にもどす
+            this.onReturnRotate(() => {
+                Debug.Log("onhide");
+            });
+        });
     }
 
     /// <summary>
@@ -86,18 +97,53 @@ public class Card : MonoBehaviour
 
         Debug.Log("OnClick");
 
-        // Dotweenで回転処理を行う
+        // 回転処理を行う
+        this.onRotate(() => {
+            // 選択判定フラグを有効にする
+            this.mIsSelected = true;
+
+            // カードを表面にする
+            this.CardImage.sprite = this.mData.ImgSprite;
+
+            // Y座標を元に戻す
+            this.onReturnRotate(() => {
+                // 選択したCardIdを保存しよう！
+                GameStateController.Instance.SelectedCardIdList.Add(this.mData.Id);
+            });
+        });
+    }
+    /// <summary>
+    /// カードを90度に回転する
+    /// </summary>
+    private void onRotate(Action onComp)
+    {
+
+        // 90度回転する
         this.mRt.DORotate(new Vector3(0f, 90f, 0f), 0.2f)
-            // 回転が完了したら
+            // 回転が終了したら
             .OnComplete(() => {
-                // 選択判定フラグを有効にする
-                this.mIsSelected = true;
 
-                // カードを表面にする
-                this.CardImage.sprite = this.mData.ImgSprite;
+                if (onComp != null)
+                {
+                    onComp();
+                }
+            });
+    }
 
-                // Y座標を元に戻す
-                this.onReturnRotate();
+    /// <summary>
+    /// カードの回転軸を元に戻す
+    /// </summary>
+    private void onReturnRotate(Action onComp)
+    {
+
+        this.mRt.DORotate(new Vector3(0f, 0f, 0f), 0.2f)
+            // 回転が終わったら
+            .OnComplete(() => {
+
+                if (onComp != null)
+                {
+                    onComp();
+                }
             });
     }
     /// <summary>
