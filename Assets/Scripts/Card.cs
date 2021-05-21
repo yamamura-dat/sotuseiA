@@ -25,7 +25,7 @@ public class Card : MonoBehaviour
     private CardData mData;
 
     // 座標情報
-    private RectTransform mRt;
+    public RectTransform mRt;
 
     // カードの設定
     public void Set(CardData data)

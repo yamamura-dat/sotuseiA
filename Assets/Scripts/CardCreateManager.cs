@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq; //このusing を新規に記入しておいてください。
 using System; //同じく
+using DG.Tweening;
+using UnityEngine.UI;
 
 public class CardCreateManager : MonoBehaviour
 {
@@ -14,6 +16,23 @@ public class CardCreateManager : MonoBehaviour
 
     // 生成したカードオブジェクトを保存する
     public List<Card> CardList = new List<Card>();
+
+    // カード情報の順位をランダムに変更したリスト
+    private List<CardData> mRandomCardDataList = new List<CardData>();
+
+    // GridLayoutGroup
+    public GridLayoutGroup GridLayout;
+
+    // カード配列のインデックス
+    private int mIndex;
+
+    // カードを生成する時の高さインデックス
+    private int mHelgthIdx;
+    // カードを生成する時の幅インデックス
+    private int mWidthIdx;
+
+    // カードの生成アニメーションのアニメーション時間
+    private readonly float DEAL_CAED_TIME = 0.5f;
 
     /*void Start()
     {
@@ -87,16 +106,32 @@ public class CardCreateManager : MonoBehaviour
             CardData cardata = new CardData(i, imgList[i]);
             cardDataList.Add(cardata);
         }
+
+        this.mIndex = 0;
+        this.mHelgthIdx = 0;
+        this.mWidthIdx = 0;
+
         // 生成したカードリスト２つ分のリストを生成する
         List<CardData> SumCardDataList = new List<CardData>();
         SumCardDataList.AddRange(cardDataList);
         SumCardDataList.AddRange(cardDataList);
 
+        // ランダムリストの初期化
+        this.mRandomCardDataList.Clear();
+
         // リストの中身をランダムに再配置する
-        List<CardData> randomCardDataList = SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList();
+        //this.mRandomCardDataList = SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList();
+
+        this.mRandomCardDataList.AddRange(SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList());
+
+        // GridLayoutを無効
+        this.GridLayout.enabled = false;
+
+        // カードを配るアニメーション処理
+        this.mSetDealCardAnime();
 
         // カードオブジェクトを生成する
-        foreach (var _cardData in randomCardDataList)
+        /*foreach (var _cardData in randomCardDataList)
         {
 
             // Instantiate で Cardオブジェクトを生成
@@ -106,9 +141,60 @@ public class CardCreateManager : MonoBehaviour
 
             // 生成したカードオブジェクトを保存する
             this.CardList.Add(card);
-        }
+        }*/
     }
+    /// <summary>
+    /// カードを配るアニメーション処理
+    /// </summary>
+    private void mSetDealCardAnime()
+    {
 
+        var _cardData = this.mRandomCardDataList[this.mIndex];
+
+        // Instantiate で Cardオブジェクトを生成
+        Card card = Instantiate<Card>(this.CardPrefab, this.CardCreateParent);
+        // データを設定する
+        card.Set(_cardData);
+        // カードの初期値を設定 (画面外にする)
+        card.mRt.anchoredPosition = new Vector2(1900, 0f);
+        // サイズをGridLayoutのCellSizeに設定
+        card.mRt.sizeDelta = this.GridLayout.cellSize;
+
+        // カードの移動先を設定
+        float posX = (this.GridLayout.cellSize.x * this.mWidthIdx) + (this.GridLayout.spacing.x * (this.mWidthIdx + 1));
+        float posY = ((this.GridLayout.cellSize.y * this.mHelgthIdx) + (this.GridLayout.spacing.y * this.mHelgthIdx)) * -1f;
+
+        // DOAnchorPosでアニメーションを行う
+        card.mRt.DOAnchorPos(new Vector2(posX, posY), this.DEAL_CAED_TIME)
+            // アニメーションが終了したら
+            .OnComplete(() => {
+                // 生成したカードオブジェクトを保存する
+                this.CardList.Add(card);
+
+                // 生成するカードデータリストのインデックスを更新
+                this.mIndex++;
+                this.mWidthIdx++;
+
+                // 生成インデックスがリストの最大値を迎えたら
+                if (this.mIndex >= this.mRandomCardDataList.Count)
+                {
+                    // GridLayoutを有効にし、生成処理を終了する
+                    this.GridLayout.enabled = true;
+                }
+                else
+                {
+                    // GridLayoutの折り返し地点に来たら
+                    if (this.mIndex % this.GridLayout.constraintCount == 0)
+                    {
+                        // 高さの生成箇所を更新
+                        this.mHelgthIdx++;
+                        this.mWidthIdx = 0;
+                    }
+                    // アニメーション処理を再帰処理する
+                    this.mSetDealCardAnime();
+                }
+            });
+    }
     /// <summary>
     /// 取得していないカードを背面にする
     /// </summary>
