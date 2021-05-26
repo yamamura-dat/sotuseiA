@@ -23,6 +23,9 @@ public class CardCreateManager : MonoBehaviour
     // GridLayoutGroup
     public GridLayoutGroup GridLayout;
 
+    // カードの生成アニメーションが終わった時
+    public Action OnCardAnimeComp;
+
     // カード配列のインデックス
     private int mIndex;
 
@@ -32,7 +35,7 @@ public class CardCreateManager : MonoBehaviour
     private int mWidthIdx;
 
     // カードの生成アニメーションのアニメーション時間
-    private readonly float DEAL_CAED_TIME = 0.5f;
+    private readonly float DEAL_CAED_TIME = 0.2f;
 
     /*void Start()
     {
@@ -120,9 +123,9 @@ public class CardCreateManager : MonoBehaviour
         this.mRandomCardDataList.Clear();
 
         // リストの中身をランダムに再配置する
-        //this.mRandomCardDataList = SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList();
+        this.mRandomCardDataList = SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList();
 
-        this.mRandomCardDataList.AddRange(SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList());
+        //this.mRandomCardDataList.AddRange(SumCardDataList.OrderBy(a => Guid.NewGuid()).ToList());
 
         // GridLayoutを無効
         this.GridLayout.enabled = false;
@@ -161,7 +164,7 @@ public class CardCreateManager : MonoBehaviour
         card.mRt.sizeDelta = this.GridLayout.cellSize;
 
         // カードの移動先を設定
-        float posX = (this.GridLayout.cellSize.x * this.mWidthIdx) + (this.GridLayout.spacing.x * (this.mWidthIdx + 1));
+        float posX = (this.GridLayout.cellSize.x * this.mWidthIdx) + (this.GridLayout.spacing.x * (this.mWidthIdx + 1.5f));
         float posY = ((this.GridLayout.cellSize.y * this.mHelgthIdx) + (this.GridLayout.spacing.y * this.mHelgthIdx)) * -1f;
 
         // DOAnchorPosでアニメーションを行う
@@ -180,6 +183,12 @@ public class CardCreateManager : MonoBehaviour
                 {
                     // GridLayoutを有効にし、生成処理を終了する
                     this.GridLayout.enabled = true;
+
+                    // アニメーション終了時の関数を宣言する
+                    if (this.OnCardAnimeComp != null)
+                    {
+                        this.OnCardAnimeComp();
+                    }
                 }
                 else
                 {
