@@ -14,20 +14,46 @@ public class GameSceneManager : MonoBehaviour
     // 時間管理クラス
     public TimerManager timerManager;
 
+    // スタートステートクラス
+    public StartStateManager startStateManager;
+
     // ゲームステート管理
     private EGameState mEGameState;
 
     // 経過時間
     private float mElapsedTime;
 
-    void Start()
+    private void mSetStartState()
+    {
+        // テキストの拡大縮小アニメーション
+        this.startStateManager.EnlarAnimation();
+    }
+
+    /// <summary>
+    /// Readyステートに遷移する
+    /// </summary>
+    public void OnGameStart()
     {
         // ゲームステートを初期化
         this.mEGameState = EGameState.READY;
 
+        // スタートエリアを表示
+        this.startStateManager.gameObject.SetActive(false);
+
         // ゲームのステート管理
         this.mSetGameState();
     }
+
+    void Start()
+    {
+
+        // ゲームステートを初期化
+        this.mEGameState = EGameState.START;
+
+        // ゲームのステート管理
+        this.mSetStartState();
+    }
+
     /// <summary>
     /// ゲームステートで処理を変更する
     /// </summary>
