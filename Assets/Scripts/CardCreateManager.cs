@@ -23,9 +23,6 @@ public class CardCreateManager : MonoBehaviour
     // GridLayoutGroup
     public GridLayoutGroup GridLayout;
 
-    //消すオブジェクト
-    public GameObject Panel;
-
     // カードの生成アニメーションが終わった時
     public Action OnCardAnimeComp;
 
@@ -91,6 +88,10 @@ public class CardCreateManager : MonoBehaviour
     /// </summary>
     public void CreateCard()
     {
+        foreach (Transform child in this.CardCreateParent)
+        {
+            Destroy(child.gameObject);
+        }
         // カード情報リスト
         List<CardData> cardDataList = new List<CardData>();
         // 表示するカード画像情報のリスト
@@ -186,9 +187,6 @@ public class CardCreateManager : MonoBehaviour
                 {
                     // GridLayoutを有効にし、生成処理を終了する
                     this.GridLayout.enabled = true;
-
-                    //パネルを消す
-                    Destroy(Panel);
 
                     // アニメーション終了時の関数を宣言する
                     if (this.OnCardAnimeComp != null)

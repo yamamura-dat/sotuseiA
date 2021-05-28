@@ -20,6 +20,11 @@ public class GameSceneManager : MonoBehaviour
     // スタートステートクラス
     public StartStateManager startStateManager;
 
+    //リザルトステートクラス
+    public ResultStateManager resultStateManager;
+
+    public GameObject panel;
+
     // ゲームステート管理
     private EGameState mEGameState;
 
@@ -43,6 +48,8 @@ public class GameSceneManager : MonoBehaviour
         // ゲームステートを初期化
         this.mEGameState = EGameState.READY;
 
+        this.panel.SetActive(true);
+
         // スタートエリアを表示
         this.startStateManager.gameObject.SetActive(false);
 
@@ -55,6 +62,14 @@ public class GameSceneManager : MonoBehaviour
 
         // ゲームステートを初期化
         this.mEGameState = EGameState.START;
+
+        // ResultAreaを非表示にする
+        this.resultStateManager.gameObject.SetActive(false);
+
+        this.scoreManager.gameObject.SetActive(false);
+        this.timerManager.gameObject.SetActive(false);
+
+        this.panel.SetActive(false);
 
         // ゲームのステート管理
         this.mSetStartState();
@@ -70,6 +85,11 @@ public class GameSceneManager : MonoBehaviour
         {
             // スタート画面
             case EGameState.START:
+                // スタートエリアを表示
+                this.startStateManager.gameObject.SetActive(true);
+                
+                // ゲームスタートの開始
+                this.mSetStartState();
                 break;
             // ゲーム準備期間
             case EGameState.READY:
@@ -81,8 +101,35 @@ public class GameSceneManager : MonoBehaviour
                 break;
             // 結果画面
             case EGameState.RESULT:
+                this.resultStateManager.gameObject.SetActive(true);
+                this.mSetResultState();
                 break;
         }
+    }
+
+    /// <summary>
+    /// リザルトステートの設定処理
+    /// </summary>
+    private void mSetResultState()
+    {
+
+        this.resultStateManager.SetTimerText((int)this.mElapsedTime);
+    }
+
+    /// <summary>
+    /// スタート画面に遷移する
+    /// </summary>
+    public void OnBackStartState()
+    {
+
+        // ResultAreaを非表示にする
+        this.resultStateManager.gameObject.SetActive(false);
+
+        // ゲームステートをStartに変更
+        this.mEGameState = EGameState.START;
+
+        // ゲームのステート管理
+        this.mSetGameState();
     }
 
     /// <summary>
@@ -123,6 +170,11 @@ public class GameSceneManager : MonoBehaviour
         // GameState が GAME状態なら
         if (this.mEGameState == EGameState.GAME)
         {
+            this.panel.SetActive(false);
+
+            this.scoreManager.gameObject.SetActive(true);
+            this.timerManager.gameObject.SetActive(true);
+
             this.mElapsedTime -= Time.deltaTime;
 
             this.timerManager.SetText((int)this.mElapsedTime);
@@ -142,19 +194,19 @@ public class GameSceneManager : MonoBehaviour
                     //得点処理
                     if(selectedId==0)
                     {
-                        mScore += 1000;
+                        this.mScore += 1000;
                     }
                     else if(selectedId==1)
                     {
-                        mScore += 700;
+                        this.mScore += 700;
                     }
                     else if (selectedId == 2)
                     {
-                        mScore += 400;
+                        this.mScore += 400;
                     }
                     else
                     {
-                        mScore += 200;
+                        this.mScore += 200;
                     }
 
                     Debug.Log($"Contains! {selectedId}");
@@ -169,6 +221,17 @@ public class GameSceneManager : MonoBehaviour
 
                 // 選択したカードリストを初期化する
                 GameStateController.Instance.SelectedCardIdList.Clear();
+            }
+            // 配置した全種類のカードを獲得したら
+            if (this.mContainCardIdList.Count >= 6)
+            {
+                
+                // ゲームをリザルトステートに遷移する
+                this.mEGameState = EGameState.RESULT;
+                this.mSetGameState();
+
+                this.scoreManager.gameObject.SetActive(false);
+                this.timerManager.gameObject.SetActive(false);
             }
         }
 
