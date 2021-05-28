@@ -14,6 +14,9 @@ public class GameSceneManager : MonoBehaviour
     // 時間管理クラス
     public TimerManager timerManager;
 
+    //得点管理クラス
+    public ScoreManager scoreManager;
+
     // スタートステートクラス
     public StartStateManager startStateManager;
 
@@ -22,6 +25,9 @@ public class GameSceneManager : MonoBehaviour
 
     // 経過時間
     private float mElapsedTime;
+
+    //得点
+    private float mScore;
 
     private void mSetStartState()
     {
@@ -101,7 +107,10 @@ public class GameSceneManager : MonoBehaviour
         this.CardCreate.CreateCard();
 
         // 時間を初期化
-        this.mElapsedTime = 0f;
+        this.mElapsedTime = 60f;
+
+        //得点を初期化
+        this.mScore = 0f;
 
         // ゲームステートを初期化
         //this.mEGameState = EGameState.START;
@@ -114,9 +123,11 @@ public class GameSceneManager : MonoBehaviour
         // GameState が GAME状態なら
         if (this.mEGameState == EGameState.GAME)
         {
-            this.mElapsedTime += Time.deltaTime;
+            this.mElapsedTime -= Time.deltaTime;
 
             this.timerManager.SetText((int)this.mElapsedTime);
+
+            this.scoreManager.SetText((int)this.mScore);
 
             // 選択したカードが２枚以上になったら
             if (GameStateController.Instance.SelectedCardIdList.Count >= 2)
@@ -128,10 +139,29 @@ public class GameSceneManager : MonoBehaviour
                 // 2枚目にあったカードと一緒だったら
                 if (selectedId == GameStateController.Instance.SelectedCardIdList[1])
                 {
+                    //得点処理
+                    if(selectedId==0)
+                    {
+                        mScore += 1000;
+                    }
+                    else if(selectedId==1)
+                    {
+                        mScore += 700;
+                    }
+                    else if (selectedId == 2)
+                    {
+                        mScore += 400;
+                    }
+                    else
+                    {
+                        mScore += 200;
+                    }
 
                     Debug.Log($"Contains! {selectedId}");
                     // 一致したカードIDを保存する
                     this.mContainCardIdList.Add(selectedId);
+
+                    //this.mScore += 100;
                 }
 
                 // カードの表示切り替えを行う
