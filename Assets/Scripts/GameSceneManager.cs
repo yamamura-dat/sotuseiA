@@ -114,6 +114,8 @@ public class GameSceneManager : MonoBehaviour
     {
 
         this.resultStateManager.SetTimerText((int)this.mElapsedTime);
+
+        this.resultStateManager.SetScoresText((int)this.mScore);
     }
 
     /// <summary>
@@ -126,7 +128,9 @@ public class GameSceneManager : MonoBehaviour
         this.resultStateManager.gameObject.SetActive(false);
 
         // ゲームステートをStartに変更
-        this.mEGameState = EGameState.START;
+        this.mEGameState = EGameState.READY;
+
+        this.panel.SetActive(true);
 
         // ゲームのステート管理
         this.mSetGameState();
@@ -175,11 +179,11 @@ public class GameSceneManager : MonoBehaviour
             this.scoreManager.gameObject.SetActive(true);
             this.timerManager.gameObject.SetActive(true);
 
-            this.mElapsedTime -= Time.deltaTime;
-
             this.timerManager.SetText((int)this.mElapsedTime);
 
             this.scoreManager.SetText((int)this.mScore);
+
+            this.mElapsedTime -= Time.deltaTime;
 
             // 選択したカードが２枚以上になったら
             if (GameStateController.Instance.SelectedCardIdList.Count >= 2)
@@ -202,11 +206,11 @@ public class GameSceneManager : MonoBehaviour
                     }
                     else if (selectedId == 2)
                     {
-                        this.mScore += 400;
+                        this.mScore += 500;
                     }
                     else
                     {
-                        this.mScore += 200;
+                        this.mScore += 100;
                     }
 
                     Debug.Log($"Contains! {selectedId}");
@@ -226,6 +230,15 @@ public class GameSceneManager : MonoBehaviour
             if (this.mContainCardIdList.Count >= 6)
             {
                 
+                // ゲームをリザルトステートに遷移する
+                this.mEGameState = EGameState.RESULT;
+                this.mSetGameState();
+
+                this.scoreManager.gameObject.SetActive(false);
+                this.timerManager.gameObject.SetActive(false);
+            }
+            if(mElapsedTime <= 0)
+            {
                 // ゲームをリザルトステートに遷移する
                 this.mEGameState = EGameState.RESULT;
                 this.mSetGameState();

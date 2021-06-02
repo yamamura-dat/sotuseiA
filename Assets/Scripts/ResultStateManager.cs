@@ -8,8 +8,7 @@ public class ResultStateManager : MonoBehaviour
     // 時間を表示するテキスト
     public Text TimerText;
 
-    public Text ScoreText;
-
+    public Text ScoresText;
     /// <summary>
     /// ゲームで経過した時間を表示する
     /// </summary>
@@ -17,5 +16,9 @@ public class ResultStateManager : MonoBehaviour
     {
         this.TimerText.text = timer.ToString();
     }
-    //続きはココ
+
+    public void SetScoresText(int scores)
+    {
+        this.ScoresText.text = scores.ToString();
+    }
 }

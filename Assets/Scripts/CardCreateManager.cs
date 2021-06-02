@@ -220,7 +220,7 @@ public class CardCreateManager : MonoBehaviour
             // 既に獲得したカードIDの場合、非表示にする
             if (containCardIdList.Contains(_card.Id))
             {
-
+                
                 // カードを非表示にする
                 //_card.SetInvisible();
             }
