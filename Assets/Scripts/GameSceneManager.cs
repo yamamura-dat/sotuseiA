@@ -108,6 +108,9 @@ public class GameSceneManager : MonoBehaviour
             // 結果画面
             case EGameState.RESULT:
                 this.resultStateManager.gameObject.SetActive(true);
+                this.scoreManager.gameObject.SetActive(false);
+                this.timerManager.gameObject.SetActive(false);
+                this.lifeManager.gameObject.SetActive(false);
                 this.mSetResultState();
                 break;
         }
@@ -122,6 +125,8 @@ public class GameSceneManager : MonoBehaviour
         this.resultStateManager.SetTimerText((int)this.mElapsedTime);
 
         this.resultStateManager.SetScoresText((int)this.mScore);
+
+
     }
 
     /// <summary>
@@ -251,9 +256,9 @@ public class GameSceneManager : MonoBehaviour
                 this.mEGameState = EGameState.RESULT;
                 this.mSetGameState();
 
-                this.scoreManager.gameObject.SetActive(false);
-                this.timerManager.gameObject.SetActive(false);
-                this.lifeManager.gameObject.SetActive(false);
+                //this.scoreManager.gameObject.SetActive(false);
+                //this.timerManager.gameObject.SetActive(false);
+                //this.lifeManager.gameObject.SetActive(false);
             }
             if(mElapsedTime <= 0)
             {
@@ -261,9 +266,9 @@ public class GameSceneManager : MonoBehaviour
                 this.mEGameState = EGameState.RESULT;
                 this.mSetGameState();
 
-                this.scoreManager.gameObject.SetActive(false);
-                this.timerManager.gameObject.SetActive(false);
-                this.lifeManager.gameObject.SetActive(false);
+                //this.scoreManager.gameObject.SetActive(false);
+                //this.timerManager.gameObject.SetActive(false);
+                //this.lifeManager.gameObject.SetActive(false);
             }
             else if(mLife>=3)
             {
@@ -271,9 +276,9 @@ public class GameSceneManager : MonoBehaviour
                 this.mEGameState = EGameState.RESULT;
                 this.mSetGameState();
 
-                this.scoreManager.gameObject.SetActive(false);
-                this.timerManager.gameObject.SetActive(false);
-                this.lifeManager.gameObject.SetActive(false);
+                //this.scoreManager.gameObject.SetActive(false);
+                //this.timerManager.gameObject.SetActive(false);
+                //this.lifeManager.gameObject.SetActive(false);
             }
         }
 
