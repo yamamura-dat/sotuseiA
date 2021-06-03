@@ -23,6 +23,9 @@ public class GameSceneManager : MonoBehaviour
     //リザルトステートクラス
     public ResultStateManager resultStateManager;
 
+    //お手つきステートクラス
+    public LifeManager lifeManager;
+
     public GameObject panel;
 
     // ゲームステート管理
@@ -33,6 +36,8 @@ public class GameSceneManager : MonoBehaviour
 
     //得点
     private float mScore;
+
+    private float mLife;
 
     private void mSetStartState()
     {
@@ -68,6 +73,7 @@ public class GameSceneManager : MonoBehaviour
 
         this.scoreManager.gameObject.SetActive(false);
         this.timerManager.gameObject.SetActive(false);
+        this.lifeManager.gameObject.SetActive(false);
 
         this.panel.SetActive(false);
 
@@ -158,10 +164,13 @@ public class GameSceneManager : MonoBehaviour
         this.CardCreate.CreateCard();
 
         // 時間を初期化
-        this.mElapsedTime = 60f;
+        this.mElapsedTime = 30f;
 
         //得点を初期化
         this.mScore = 0f;
+
+        //お手つき初期化
+        this.mLife = 0f;
 
         // ゲームステートを初期化
         //this.mEGameState = EGameState.START;
@@ -178,10 +187,13 @@ public class GameSceneManager : MonoBehaviour
 
             this.scoreManager.gameObject.SetActive(true);
             this.timerManager.gameObject.SetActive(true);
+            this.lifeManager.gameObject.SetActive(true);
 
             this.timerManager.SetText((int)this.mElapsedTime);
 
             this.scoreManager.SetText((int)this.mScore);
+
+            this.lifeManager.SetText((int)this.mLife);
 
             this.mElapsedTime -= Time.deltaTime;
 
@@ -219,12 +231,17 @@ public class GameSceneManager : MonoBehaviour
 
                     //this.mScore += 100;
                 }
+                else
+                {
+                    this.mLife += 1;
+                }
 
                 // カードの表示切り替えを行う
                 this.CardCreate.HideCardList(this.mContainCardIdList);
 
                 // 選択したカードリストを初期化する
                 GameStateController.Instance.SelectedCardIdList.Clear();
+
             }
             // 配置した全種類のカードを獲得したら
             if (this.mContainCardIdList.Count >= 6)
@@ -236,6 +253,7 @@ public class GameSceneManager : MonoBehaviour
 
                 this.scoreManager.gameObject.SetActive(false);
                 this.timerManager.gameObject.SetActive(false);
+                this.lifeManager.gameObject.SetActive(false);
             }
             if(mElapsedTime <= 0)
             {
@@ -245,6 +263,17 @@ public class GameSceneManager : MonoBehaviour
 
                 this.scoreManager.gameObject.SetActive(false);
                 this.timerManager.gameObject.SetActive(false);
+                this.lifeManager.gameObject.SetActive(false);
+            }
+            else if(mLife>=3)
+            {
+                // ゲームをリザルトステートに遷移する
+                this.mEGameState = EGameState.RESULT;
+                this.mSetGameState();
+
+                this.scoreManager.gameObject.SetActive(false);
+                this.timerManager.gameObject.SetActive(false);
+                this.lifeManager.gameObject.SetActive(false);
             }
         }
 
