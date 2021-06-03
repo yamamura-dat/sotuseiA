@@ -97,12 +97,12 @@ public class CardCreateManager : MonoBehaviour
         // 表示するカード画像情報のリスト
         List<Sprite> imgList = new List<Sprite>();
         // Resources/Imageフォルダ内にある画像を取得する
-        imgList.Add(Resources.Load<Sprite>("Image/buki_morningstar_flail"));
-        imgList.Add(Resources.Load<Sprite>("Image/fantasy_dwarf"));
-        imgList.Add(Resources.Load<Sprite>("Image/fantasy_game_character_slime"));
-        imgList.Add(Resources.Load<Sprite>("Image/fantasy_goblin"));
-        imgList.Add(Resources.Load<Sprite>("Image/fantasy_golem"));
-        imgList.Add(Resources.Load<Sprite>("Image/fantasy_orc"));
+        imgList.Add(Resources.Load<Sprite>("Image/sample1"));
+        imgList.Add(Resources.Load<Sprite>("Image/sample2"));
+        imgList.Add(Resources.Load<Sprite>("Image/sample3"));
+        imgList.Add(Resources.Load<Sprite>("Image/sample4"));
+        imgList.Add(Resources.Load<Sprite>("Image/sample5"));
+        imgList.Add(Resources.Load<Sprite>("Image/sample6"));
 
         // forを回す回数を取得する
         int loopCnt = imgList.Count;
