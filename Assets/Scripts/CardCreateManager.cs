@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq; //このusing を新規に記入しておいてください。
-using System; //同じく
+using System.Linq; 
+using System; 
 using DG.Tweening;
 using UnityEngine.UI;
 

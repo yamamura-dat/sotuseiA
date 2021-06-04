@@ -9,14 +9,17 @@ public class StartStateManager : MonoBehaviour
     // ゲームの開始テキストの座標
     public RectTransform GameStartTextRt;
 
+    public float mCount = 0;
+
     /// <summary>
     /// テキストの拡大アニメーション
     /// </summary>
     public void EnlarAnimation()
     {
-
+        
         this.GameStartTextRt.DOScale(Vector3.one * 1.2f, 2f)
-            .OnComplete(() => {
+            .OnComplete(() =>
+            {
                 // テキストの縮小アニメーション
                 this.mShrinkAnimation();
             });
@@ -29,9 +32,11 @@ public class StartStateManager : MonoBehaviour
     {
 
         this.GameStartTextRt.DOScale(Vector3.one * 0.8f, 2f)
-            .OnComplete(() => {
+            .OnComplete(() =>
+            {
                 // テキストの縮小アニメーション
                 this.EnlarAnimation();
             });
     }
+
 }

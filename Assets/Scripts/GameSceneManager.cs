@@ -28,6 +28,10 @@ public class GameSceneManager : MonoBehaviour
 
     public GameObject panel;
 
+    public GameObject CompleteArea;
+
+    public GameObject PerfectArea;
+
     // ゲームステート管理
     private EGameState mEGameState;
 
@@ -60,6 +64,7 @@ public class GameSceneManager : MonoBehaviour
 
         // ゲームのステート管理
         this.mSetGameState();
+
     }
 
     void Start()
@@ -77,6 +82,10 @@ public class GameSceneManager : MonoBehaviour
 
         this.panel.SetActive(false);
 
+        CompleteArea.SetActive(false);
+
+        PerfectArea.SetActive(false);
+
         // ゲームのステート管理
         this.mSetStartState();
     }
@@ -93,12 +102,14 @@ public class GameSceneManager : MonoBehaviour
             case EGameState.START:
                 // スタートエリアを表示
                 this.startStateManager.gameObject.SetActive(true);
-                
+
                 // ゲームスタートの開始
                 this.mSetStartState();
                 break;
             // ゲーム準備期間
             case EGameState.READY:
+                CompleteArea.SetActive(false);
+                PerfectArea.SetActive(false);
                 // ゲームの準備ステートを開始する
                 this.mSetGameReady();
                 break;
@@ -138,7 +149,7 @@ public class GameSceneManager : MonoBehaviour
         // ResultAreaを非表示にする
         this.resultStateManager.gameObject.SetActive(false);
 
-        // ゲームステートをStartに変更
+        // ゲームステートをReadyに変更
         this.mEGameState = EGameState.READY;
 
         this.panel.SetActive(true);
@@ -219,11 +230,11 @@ public class GameSceneManager : MonoBehaviour
                     }
                     else if(selectedId==1)
                     {
-                        this.mScore += 700;
+                        this.mScore += 800;
                     }
                     else if (selectedId == 2)
                     {
-                        this.mScore += 500;
+                        this.mScore += 400;
                     }
                     else
                     {
@@ -251,7 +262,13 @@ public class GameSceneManager : MonoBehaviour
             // 配置した全種類のカードを獲得したら
             if (this.mContainCardIdList.Count >= 6)
             {
-                
+                mScore += 2000;
+                CompleteArea.SetActive(true);
+                if(mLife==0)
+                {
+                    PerfectArea.SetActive(true);
+                    mScore += 2000;
+                }
                 // ゲームをリザルトステートに遷移する
                 this.mEGameState = EGameState.RESULT;
                 this.mSetGameState();
