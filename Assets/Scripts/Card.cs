@@ -67,6 +67,7 @@ public class Card : MonoBehaviour
             // 角度を元にもどす
             this.onReturnRotate(() => {
                 Debug.Log("onhide");
+
             });
         });
     }
@@ -117,7 +118,7 @@ public class Card : MonoBehaviour
     /// </summary>
     private void onRotate(Action onComp)
     {
-
+        
         // 90度回転する
         this.mRt.DORotate(new Vector3(0f, 90f, 0f), 0.2f)
             // 回転が終了したら

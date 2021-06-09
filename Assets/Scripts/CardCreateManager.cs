@@ -34,6 +34,9 @@ public class CardCreateManager : MonoBehaviour
     // カードを生成する時の幅インデックス
     private int mWidthIdx;
 
+    // ゲームステート管理
+    private EGameState mEGameState;
+
     // カードの生成アニメーションのアニメーション時間
     private readonly float DEAL_CAED_TIME = 0.2f;
 

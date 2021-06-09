@@ -17,14 +17,14 @@ public class GameSceneManager : MonoBehaviour
     //得点管理クラス
     public ScoreManager scoreManager;
 
+    //お手つき管理クラス
+    public LifeManager lifeManager;
+
     // スタートステートクラス
     public StartStateManager startStateManager;
 
     //リザルトステートクラス
     public ResultStateManager resultStateManager;
-
-    //お手つきステートクラス
-    public LifeManager lifeManager;
 
     public GameObject panel;
 
@@ -41,6 +41,7 @@ public class GameSceneManager : MonoBehaviour
     //得点
     private float mScore;
 
+    //お手つき
     private float mLife;
 
     private void mSetStartState()
@@ -102,12 +103,15 @@ public class GameSceneManager : MonoBehaviour
             case EGameState.START:
                 // スタートエリアを表示
                 this.startStateManager.gameObject.SetActive(true);
+                CompleteArea.SetActive(false);
+                PerfectArea.SetActive(false);
 
                 // ゲームスタートの開始
                 this.mSetStartState();
                 break;
             // ゲーム準備期間
             case EGameState.READY:
+                this.CardCreate.CardCreateParent.gameObject.SetActive(true);
                 CompleteArea.SetActive(false);
                 PerfectArea.SetActive(false);
                 // ゲームの準備ステートを開始する
@@ -122,6 +126,7 @@ public class GameSceneManager : MonoBehaviour
                 this.scoreManager.gameObject.SetActive(false);
                 this.timerManager.gameObject.SetActive(false);
                 this.lifeManager.gameObject.SetActive(false);
+                this.CardCreate.CardCreateParent.gameObject.SetActive(false);
                 this.mSetResultState();
                 break;
         }
@@ -144,6 +149,19 @@ public class GameSceneManager : MonoBehaviour
     /// スタート画面に遷移する
     /// </summary>
     public void OnBackStartState()
+    {
+
+        // ResultAreaを非表示にする
+        this.resultStateManager.gameObject.SetActive(false);
+
+        // ゲームステートをStartに変更
+        this.mEGameState = EGameState.START;
+
+        // ゲームのステート管理
+        this.mSetGameState();
+    }
+
+    public void OnBackReadyState()
     {
 
         // ResultAreaを非表示にする
@@ -199,6 +217,7 @@ public class GameSceneManager : MonoBehaviour
         // GameState が GAME状態なら
         if (this.mEGameState == EGameState.GAME)
         {
+
             this.panel.SetActive(false);
 
             this.scoreManager.gameObject.SetActive(true);
@@ -219,7 +238,7 @@ public class GameSceneManager : MonoBehaviour
 
                 // 最初に選択したCardIDを取得する
                 int selectedId = GameStateController.Instance.SelectedCardIdList[0];
-
+                
                 // 2枚目にあったカードと一緒だったら
                 if (selectedId == GameStateController.Instance.SelectedCardIdList[1])
                 {
