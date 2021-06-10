@@ -281,12 +281,12 @@ public class GameSceneManager : MonoBehaviour
             // 配置した全種類のカードを獲得したら
             if (this.mContainCardIdList.Count >= 6)
             {
-                mScore += 2000;
+                mScore += 2500;
                 CompleteArea.SetActive(true);
                 if(mLife==0)
                 {
                     PerfectArea.SetActive(true);
-                    mScore += 2000;
+                    mScore += 5000;
                 }
                 // ゲームをリザルトステートに遷移する
                 this.mEGameState = EGameState.RESULT;

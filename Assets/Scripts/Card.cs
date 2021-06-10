@@ -49,6 +49,9 @@ public class Card : MonoBehaviour
         // 座標情報を取得しておく
         this.mRt = this.GetComponent<RectTransform>();
 
+        // CardId初期化
+        GameStateController.Instance.SelectedCardIdList.Clear();
+
     }
     ///  <summary>
     /// カードを背面表記にする
